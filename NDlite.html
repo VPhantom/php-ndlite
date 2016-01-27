@@ -1,0 +1,489 @@
+<html>
+	<head>
+		<title>NDlite</title>
+<style>
+
+/* Example NDlite styling, loosely based on NaturalDocs 1.x.
+ *
+ * WARNING: Tested only with Firefox 2.0. I'm not sure MSIE will like the
+ * display:table-cell I used in the summary and definition lists.
+ */
+
+/* Make links less intrusive in text flow */
+.ndlite_doc a {
+	text-decoration: none;
+}
+.ndlite_doc a:hover {
+	text-decoration: underline;
+}
+
+/* Titles */
+.ndlite_doc h2 {
+	border-bottom: 2px solid black;
+	font-variant: small-caps;
+	padding-left: 1em;
+}
+.ndlite_doc h3 {
+	border-bottom: 1px solid #808080;
+	padding-left: 2em;
+}
+
+/* Code blocks */
+.ndlite_doc pre {
+	margin: 0 1em 0 2em;
+	padding: 1em;
+	border: 1px solid #c0c0c0;
+	border-left: 6px solid #c0c0c0;
+	color: #606060;
+}
+
+/* Definition lists */
+.ndlite_doc dt {
+	color: #606060;
+	font-family: monospace;
+}
+.ndlite_doc dd {
+	margin-bottom: 1em;
+}
+
+/* Prototype code */
+.ndlite_doc code {
+	display: block;
+	font-family: monospace;
+	border: 1px solid #c0c0c0;
+	background-color: #f8f8f8;
+	margin: 0.5em 4em 1em 4em;
+	padding: 0.5em 1em 0.5em 1em;
+}
+
+/* Summary */
+.ndlite_doc .NDlite_Summary {
+	padding: 1em 1em 0.5em 2em;
+	margin: 0 4em 0 4em;
+	background-color: #f8f8f8;
+	border: 1px solid #c0c0c0;
+}
+.ndlite_doc .NDlite_Summary ul {
+	margin-left: 0;
+	padding-left: 2em;
+}
+.ndlite_doc .NDlite_Summary li {
+	list-style-type: none;
+	margin-left: 0;
+	padding-left: 0;
+	clear: both;
+}
+.ndlite_doc .NDlite_Summary li.NDlite_Group ul {
+	margin: 0.5em 0 1em 0;
+}
+.ndlite_doc .NDlite_Summary a {
+	display: block;
+	float: left;
+	width: 20em;
+}
+.ndlite_doc .NDlite_Summary .NDlite_Abstract a {
+	width: auto;
+	display: inline;
+	float: none;
+}
+.ndlite_doc .NDlite_Summary li.NDlite_Group a {
+	font-weight: bold;
+	font-variant: small-caps;
+	width: 18em;
+}
+.ndlite_doc .NDlite_Summary li.NDlite_Group li a {
+	font-weight: normal;
+	font-variant: normal;
+	width: 16em;
+}
+.ndlite_doc .NDlite_Summary li.odd {
+	background-color: #eaeaea;
+}
+
+</style>
+	</head>
+	<body>
+		<div class="ndlite_doc">
+			<h1>NDlite</h1>
+<p>Extract NaturalDocs and PHPDoc compatible documentation from source code. </p>
+
+<h2>Summary</h2>
+
+<ul class="NDlite_Summary">
+	<li class="NDlite_Group"><a href="#NDlite_Introduction">Introduction</a> <span class="NDlite_Abstract"></span>
+		<ul>
+		<li class="odd"><a href="#_Legal">Legal</a> <span class="NDlite_Abstract">Copyright (C) 2008-2010 Stephane Lavergne <a href="http://www.imars.com/">http://www.imars.com/</a></span></li>
+		<li><a href="#_Description">Description</a> <span class="NDlite_Abstract">Useful for public and private API documentation, but also for plain text files with minimal formatting.</span></li>
+		</ul>
+	</li>
+	<li class="NDlite_Group"><a href="#NDlite_Constants">Constants</a> <span class="NDlite_Abstract"></span>
+		<ul>
+		<li class="odd"><a href="#_NDLITE_K_GROUP">NDLITE_K_GROUP</a> <span class="NDlite_Abstract"></span></li>
+		<li><a href="#_NDLITE_K_CHILD">NDLITE_K_CHILD</a> <span class="NDlite_Abstract"></span></li>
+		<li class="odd"><a href="#_NDLITE_K_GENERIC">NDLITE_K_GENERIC</a> <span class="NDlite_Abstract"></span></li>
+		</ul>
+	</li>
+	<li class="NDlite_Group"><a href="#NDlite_Properties">Properties</a> <span class="NDlite_Abstract"></span>
+		<ul>
+		<li class="odd"><a href="#NDlite_grabber">grabber</a> <span class="NDlite_Abstract">Our super-duper comment+code extracting PCRE.</span></li>
+		<li><a href="#NDlite_grabberCommentIndex">grabberCommentIndex</a> <span class="NDlite_Abstract">Identify the PCRE match index for comment body.</span></li>
+		<li class="odd"><a href="#NDlite_grabberCodeIndex">grabberCodeIndex</a> <span class="NDlite_Abstract">Identify the PCRE match index for code line.</span></li>
+		<li><a href="#NDlite_source">source</a> <span class="NDlite_Abstract">This instance's source array.</span></li>
+		<li class="odd"><a href="#NDlite_intro">intro</a> <span class="NDlite_Abstract">First block extracted from source array.</span></li>
+		<li><a href="#NDlite_path">path</a> <span class="NDlite_Abstract">Path to the document tree on disk, or false.</span></li>
+		<li class="odd"><a href="#NDlite_cwd">cwd</a> <span class="NDlite_Abstract">Directory of the current document on disk, or false.</span></li>
+		<li><a href="#NDlite_URL">URL</a> <span class="NDlite_Abstract">Base URL to reach this NDlite instance, or false.</span></li>
+		<li class="odd"><a href="#NDlite_useExt">useExt</a> <span class="NDlite_Abstract">Whether to include the extension of the file.</span></li>
+		<li><a href="#NDlite_postfix">postfix</a> <span class="NDlite_Abstract">String to append to URLs.</span></li>
+		</ul>
+	</li>
+	<li class="NDlite_Group"><a href="#NDlite_Methods">Methods</a> <span class="NDlite_Abstract"></span>
+		<ul>
+		<li class="odd"><a href="#NDlite___construct">__construct</a> <span class="NDlite_Abstract">Creates an instance of the NDlite class.</span></li>
+		<li><a href="#NDlite__stringToLines">_stringToLines</a> <span class="NDlite_Abstract">Convert a string containing a block of comments into an array of lines stripped of their comment indicators.</span></li>
+		<li class="odd"><a href="#NDlite__mkURL">_mkURL</a> <span class="NDlite_Abstract">Resolve the contents of a reference into a hyperlink.</span></li>
+		<li><a href="#NDlite__inlineXHTML">_inlineXHTML</a> <span class="NDlite_Abstract"><strong>Bold</strong>, <em>emphasis</em>, English &ldquo;quotes&rdquo; and hyperlinks.</span></li>
+		<li class="odd"><a href="#NDlite__linesToXHTML">_linesToXHTML</a> <span class="NDlite_Abstract">Process an array of lines into an XHTML string.</span></li>
+		<li><a href="#NDlite_parseFile">parseFile</a> <span class="NDlite_Abstract">Load a file from disk into this instance.</span></li>
+		<li class="odd"><a href="#NDlite_parseString">parseString</a> <span class="NDlite_Abstract">Load a source in the form of a string, into this instance.</span></li>
+		<li><a href="#NDlite_guessTitle">guessTitle</a> <span class="NDlite_Abstract">Guess the title of this instance.</span></li>
+		<li class="odd"><a href="#NDlite__linesToAbstract">_linesToAbstract</a> <span class="NDlite_Abstract">Extract the first sentence or paragraph from an array of lines.</span></li>
+		<li><a href="#NDlite_toXHTML">toXHTML</a> <span class="NDlite_Abstract">Produce XHTML documentation from the current source.</span></li>
+	</ul></li>
+</ul>
+
+<h2><a id="NDlite_Introduction"></a>Introduction</h2>
+
+
+<h3><a id="_Legal"></a>Legal</h3>
+
+<p>Copyright (C) 2008-2010 Stephane Lavergne <a href="http://www.imars.com/">http://www.imars.com/</a></p>
+<p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful, but <strong>WITHOUT ANY WARRANTY</strong>; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
+
+<h3><a id="_Description"></a>Description</h3>
+
+<p>Useful for public and private API documentation, but also for plain text files with minimal formatting. Implements a subset of the excellent <a href="http://www.NaturalDocs.org">www.NaturalDocs.org</a> philosophy and rudimentary <a href="http://en.wikipedia.org/wiki/PHPDoc">http://en.wikipedia.org/wiki/PHPDoc</a> as well.</p>
+<p>If you just need a quick inline documentation parser with the NaturalDocs philosophy, or a basic way to view your PHPDoc documented source files with a single-file utility, this is it.  Note that PHPDoc support understands @param and @return natively, and displays all other tags in &ldquo;Name: contents&rdquo; fashion.  This isn't intended to replace phpDocumentor and others, but to provide a quick and easy to use alternative when you need one, as I did.</p>
+
+<h4>Example</h4>
+<pre>$doc = new NDlite();
+$doc-&gt;parseFile($path_to_my_source_file);
+echo "&lt;h1&gt;Developer documentation for: " . $doc-&gt;guessTitle() . "&lt;/h1&gt;\n";
+echo $doc-&gt;toXHTML(array('private' =&gt; true));
+</pre>
+
+<h4>TODO</h4>
+<ul>
+	<li>Document exactly what is supported...</li>
+</ul>
+
+<h4>Known Bugs</h4>
+<ul>
+	<li>I use glob() with a prefix path, part of the PATH_INFO and &ldquo;.*&rdquo;. In unsafe installations of PHP, I'll bet this could allow malicious users to form a PATH_INFO which could make NDlite read unintended files. For small regular files, this is mostly harmless because the chances of NDlite recognizing displayable comments is rather low. I see a possible issue with large files using all of the PHP process' allowed memory on each call. I also see an issue with devices and pipes, which could stall NDlite processes waiting for input without reaching their CPU clock limit if no wall clock limit is in force.</li>
+</ul>
+
+<h4>Future Developments</h4>
+<ul>
+	<li>I'd like to see a &ldquo;totroff()&rdquo; for creating troff output for man pages. I then could switch from POD to NDlite in my shell scripts.</li>
+</ul>
+<ul>
+	<li>Improve plurals and possessives to match NaturalDocs' versatility.</li>
+</ul>
+<ul>
+	<li>Add language parameter so that I can add French quote substitutions.</li>
+</ul>
+<ul>
+	<li>Further parse function prototypes, like NaturalDocs.</li>
+</ul>
+
+<h2><a id="NDlite_Constants"></a>Constants</h2>
+
+
+<h3><a id="_NDLITE_K_GROUP"></a>NDLITE_K_GROUP</h3>
+
+<code>define('NDLITE_K_GROUP', 1)</code>
+
+
+<h3><a id="_NDLITE_K_CHILD"></a>NDLITE_K_CHILD</h3>
+
+<code>define('NDLITE_K_CHILD', 2)</code>
+
+
+<h3><a id="_NDLITE_K_GENERIC"></a>NDLITE_K_GENERIC</h3>
+
+<code>define('NDLITE_K_GENERIC', 3)</code>
+
+
+<h2><a id="NDlite_Properties"></a>Properties</h2>
+
+
+<h3><a id="NDlite_grabber"></a>grabber</h3>
+
+<code>private $grabber = "</code>
+
+<p>Our super-duper comment+code extracting PCRE.</p>
+<p>1. Comment has to be one of: Consecutive lines with initial non-whitespace '//' or '#' Block starting with '/*' ending ungreedy with '*/' Block starting with &ldquo;=begin nd|NaturalDocs|Natural Docs&rdquo;, ending ungreedy with &ldquo;=cut&rdquo; or &ldquo;=end&rdquo;</p>
+<p>2. First line of LINES-BASED comment must contain ':' and exclude '$' before the ':' to avoid CVS keywords. Not enforced at this level for block comments.</p>
+<p>3. Following is considered code until ';{/#'. </p>
+
+<h3><a id="NDlite_grabberCommentIndex"></a>grabberCommentIndex</h3>
+
+<code>private $grabberCommentIndex = 1</code>
+
+<p>Identify the PCRE match index for comment body. </p>
+
+<h3><a id="NDlite_grabberCodeIndex"></a>grabberCodeIndex</h3>
+
+<code>private $grabberCodeIndex = 18</code>
+
+<p>Identify the PCRE match index for code line. </p>
+
+<h3><a id="NDlite_source"></a>source</h3>
+
+<code>private $source</code>
+
+<p>This instance's source array. </p>
+
+<h3><a id="NDlite_intro"></a>intro</h3>
+
+<code>private $intro</code>
+
+<p>First block extracted from source array. </p>
+
+<h3><a id="NDlite_path"></a>path</h3>
+
+<code>private $path</code>
+
+<p>Path to the document tree on disk, or false. </p>
+
+<h3><a id="NDlite_cwd"></a>cwd</h3>
+
+<code>private $cwd</code>
+
+<p>Directory of the current document on disk, or false. </p>
+
+<h3><a id="NDlite_URL"></a>URL</h3>
+
+<code>private $URL</code>
+
+<p>Base URL to reach this NDlite instance, or false. </p>
+
+<h3><a id="NDlite_useExt"></a>useExt</h3>
+
+<code>private $useExt</code>
+
+<p>Whether to include the extension of the file. </p>
+
+<h3><a id="NDlite_postfix"></a>postfix</h3>
+
+<code>private $postfix</code>
+
+<p>String to append to URLs. </p>
+
+<h2><a id="NDlite_Methods"></a>Methods</h2>
+
+
+<h3><a id="NDlite___construct"></a>__construct</h3>
+
+<code>public function __construct($path = false, $URL = false, $useExt = true, $postfix = '')</code>
+
+<p>Creates an instance of the NDlite class.</p>
+<p>If you supply the optional path and url arguments, references to unknown symbols will cause lookups in the parsed source's current directory, then the root of the document path, for a matching basename.</p>
+
+<h4>Example</h4>
+<pre>$doc = new NDlite(
+    "/usr/local/src/",
+    "/cgi-bin/ndlite.cgi?q=",
+    false
+);
+</pre>
+<p>As you can see, it becomes easy to use a standard query if you'd like, although I personally prefer the use of PATH_INFO to make NDlite less apparent to the end-user on a web site. If you're using NDlite for pre-processing, your URL might be simply the base of your site's output directory, like &ldquo;/api-docs/&rdquo; for example.</p>
+
+<h4>Parameters</h4>
+<dl>
+	<dt>path </dt>
+	<dd>Path to your documentation tree on disk. (Optional.)</dd>
+
+	<dt>URL </dt>
+	<dd>Base URL to reach this NDline instance. (Optional.)</dd>
+
+	<dt>useExt </dt>
+	<dd>Whether to include the extension of the file. (Optional.)</dd>
+
+	<dt>postfix </dt>
+	<dd>String to append to URLs. (Optional.)</dd>
+
+</dl>
+
+<h3><a id="NDlite__stringToLines"></a>_stringToLines</h3>
+
+<code>private function _stringToLines($comment)</code>
+
+<p>Convert a string containing a block of comments into an array of lines stripped of their comment indicators.</p>
+
+<h4>Parameters</h4>
+<dl>
+	<dt>comment </dt>
+	<dd>The input string.</dd>
+
+</dl>
+
+<h4>Returns</h4>
+<p>The array of strings, or false if the block should be discarded. </p>
+
+<h3><a id="NDlite__mkURL"></a>_mkURL</h3>
+
+<code>private function _mkURL($ref, $parent)</code>
+
+<p>Resolve the contents of a reference into a hyperlink. Usually called from the PCRE in <a href="#NDlite__inlineXHTML">_inlineXHTML()</a>.</p>
+
+<h4>Parameters</h4>
+<dl>
+	<dt>ref </dt>
+	<dd>The reference string.</dd>
+
+	<dt>parent </dt>
+	<dd>The parent id.</dd>
+
+</dl>
+
+<h4>Returns</h4>
+<p>An XHTML anchor ready to display or the original ref if all attempts to resolve failed. </p>
+
+<h3><a id="NDlite__inlineXHTML"></a>_inlineXHTML</h3>
+
+<code>private function _inlineXHTML($line, $parent = '')</code>
+
+<p><strong>Bold</strong>, <em>emphasis</em>, English &ldquo;quotes&rdquo; and hyperlinks. Usually called from <a href="#NDlite__linesToXHTML">_linesToXHTML()</a>.</p>
+<p>Note that bold only works for up to 40 characters long. This is to try to avoid cases where two stand-alone symbols are present. Emphasis is even more strict, and works only for single words. (Unless underscores are used between the words.)</p>
+
+<h4>Parameters</h4>
+<dl>
+	<dt>line </dt>
+	<dd>The string to parse.</dd>
+
+	<dt>parent </dt>
+	<dd>The parent id for URL construction purposes. (Optional.)</dd>
+
+</dl>
+
+<h4>Returns</h4>
+<p>The parsed string. </p>
+
+<h3><a id="NDlite__linesToXHTML"></a>_linesToXHTML</h3>
+
+<code>private function _linesToXHTML($lines, $parent = '')</code>
+
+<p>Process an array of lines into an XHTML string. Usually called from <a href="#NDlite_toXHTML">toXHTML()</a>.</p>
+<p>Note that h4 headers can be multiline, but they cannot exceed 40 characters overall. This helps avoid making single-sentence paragraphs which happen to end with ':' into headers.</p>
+
+<h4>Parameters</h4>
+<dl>
+	<dt>lines </dt>
+	<dd>Array of strings.</dd>
+
+	<dt>parent </dt>
+	<dd>Parent id for URL construction purposes. (Optional.)</dd>
+
+</dl>
+
+<h4>Returns</h4>
+<p>String representing the XHTML. </p>
+
+<h3><a id="NDlite_parseFile"></a>parseFile</h3>
+
+<code>public function parseFile($filename)</code>
+
+<p>Load a file from disk into this instance. Internally, this is a wrapper around <a href="#NDlite_parseString">parseString()</a> which calls PHP's file_get_contents() for you.</p>
+
+<h4>Parameters</h4>
+<dl>
+	<dt>filename </dt>
+	<dd>The file path to read.</dd>
+
+</dl>
+
+<h4>Returns</h4>
+<p>The result of <a href="#NDlite_parseString">parseString()</a>. </p>
+
+<h3><a id="NDlite_parseString"></a>parseString</h3>
+
+<code>public function parseString($input)</code>
+
+<p>Load a source in the form of a string, into this instance.</p>
+
+<h4>Parameters</h4>
+<dl>
+	<dt>input </dt>
+	<dd>The string containing source code to parse for comments.</dd>
+
+</dl>
+
+<h4>Returns</h4>
+<p>Always true as of this version. </p>
+
+<h3><a id="NDlite_guessTitle"></a>guessTitle</h3>
+
+<code>public function guessTitle($fallback = false)</code>
+
+<p>Guess the title of this instance. Only useful after parsing some source.</p>
+
+<h4>Parameters</h4>
+<dl>
+	<dt>fallback </dt>
+	<dd>Alternative if no suitable candidate is found. (Optional.)</dd>
+
+</dl>
+
+<h4>Returns</h4>
+<p>The first of &ldquo;File&rdquo;, &ldquo;Title&rdquo;, &ldquo;Class&rdquo; or &ldquo;Group&rdquo; title found, or your fallback if none is found, or false if no fallback is provided. </p>
+
+<h3><a id="NDlite__linesToAbstract"></a>_linesToAbstract</h3>
+
+<code>private function _linesToAbstract($lines, $parent = '')</code>
+
+<p>Extract the first sentence or paragraph from an array of lines. Used for summary in <a href="#NDlite_toXHTML">toXHTML()</a>.</p>
+
+<h4>Parameters</h4>
+<dl>
+	<dt>lines </dt>
+	<dd>Array of strings.</dd>
+
+	<dt>parent </dt>
+	<dd>Parent id for URL constructino purposes. (Optional.)</dd>
+
+</dl>
+
+<h4>Returns</h4>
+<p>The summary string. </p>
+
+<h3><a id="NDlite_toXHTML"></a>toXHTML</h3>
+
+<code>public function toXHTML($flags = false)</code>
+
+<p>Produce XHTML documentation from the current source. It is up to your application to jazz it up with CSS as you'd like.</p>
+
+<h4>Parameters</h4>
+<dl>
+	<dt>flags </dt>
+	<dd>Named array of options. (Optional.)</dd>
+
+</dl>
+
+<h4>Valid flags</h4>
+<dl>
+	<dt>private </dt>
+	<dd>Set true to include private topics, false or omit to limit display to regular topics only.</dd>
+
+	<dt>summary </dt>
+	<dd>Set false to explicitly request omitting the summary.</dd>
+
+</dl>
+
+<h4>Returns</h4>
+<p>The XHTML string ready to display or save. </p>
+		</div>
+	</body>
+</html>
