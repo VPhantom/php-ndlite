@@ -1,0 +1,120 @@
+#!/usr/bin/php
+<?php
+
+	require_once 'NDlite.php';
+
+	$doc = new NDlite();
+	$doc->parseFile($argv[1]);
+	$title = $doc->guessTitle($argv[1]);
+?>
+<html>
+	<head>
+		<title><?=$title?></title>
+<style>
+
+/* Example NDlite styling, loosely based on NaturalDocs 1.x.
+ *
+ * WARNING: Tested only with Firefox 2.0. I'm not sure MSIE will like the
+ * display:table-cell I used in the summary and definition lists.
+ */
+
+/* Make links less intrusive in text flow */
+.ndlite_doc a {
+	text-decoration: none;
+}
+.ndlite_doc a:hover {
+	text-decoration: underline;
+}
+
+/* Titles */
+.ndlite_doc h2 {
+	border-bottom: 2px solid black;
+	font-variant: small-caps;
+	padding-left: 1em;
+}
+.ndlite_doc h3 {
+	border-bottom: 1px solid #808080;
+	padding-left: 2em;
+}
+
+/* Code blocks */
+.ndlite_doc pre {
+	margin: 0 1em 0 2em;
+	padding: 1em;
+	border: 1px solid #c0c0c0;
+	border-left: 6px solid #c0c0c0;
+	color: #606060;
+}
+
+/* Definition lists */
+.ndlite_doc dt {
+	color: #606060;
+	font-family: monospace;
+}
+.ndlite_doc dd {
+	margin-bottom: 1em;
+}
+
+/* Prototype code */
+.ndlite_doc code {
+	display: block;
+	font-family: monospace;
+	border: 1px solid #c0c0c0;
+	background-color: #f8f8f8;
+	margin: 0.5em 4em 1em 4em;
+	padding: 0.5em 1em 0.5em 1em;
+}
+
+/* Summary */
+.ndlite_doc .NDlite_Summary {
+	padding: 1em 1em 0.5em 2em;
+	margin: 0 4em 0 4em;
+	background-color: #f8f8f8;
+	border: 1px solid #c0c0c0;
+}
+.ndlite_doc .NDlite_Summary ul {
+	margin-left: 0;
+	padding-left: 2em;
+}
+.ndlite_doc .NDlite_Summary li {
+	list-style-type: none;
+	margin-left: 0;
+	padding-left: 0;
+	clear: both;
+}
+.ndlite_doc .NDlite_Summary li.NDlite_Group ul {
+	margin: 0.5em 0 1em 0;
+}
+.ndlite_doc .NDlite_Summary a {
+	display: block;
+	float: left;
+	width: 20em;
+}
+.ndlite_doc .NDlite_Summary .NDlite_Abstract a {
+	width: auto;
+	display: inline;
+	float: none;
+}
+.ndlite_doc .NDlite_Summary li.NDlite_Group a {
+	font-weight: bold;
+	font-variant: small-caps;
+	width: 18em;
+}
+.ndlite_doc .NDlite_Summary li.NDlite_Group li a {
+	font-weight: normal;
+	font-variant: normal;
+	width: 16em;
+}
+.ndlite_doc .NDlite_Summary li.odd {
+	background-color: #eaeaea;
+}
+
+</style>
+	</head>
+	<body>
+		<div class="ndlite_doc">
+			<h1><?=$title?></h1>
+<?php echo $doc->toXHTML(array('private' => true)); ?>
+		</div>
+	</body>
+</html>
